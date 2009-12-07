@@ -3,7 +3,7 @@ import Data.List
 data Direction = LeftTurn
                | RightTurn
                | Straight
-                 deriving Show
+                 deriving (Eq, Show)
 
 data Point = Point Double Double
              deriving (Eq, Show)
@@ -20,7 +20,7 @@ turns (a:b:c:xs) = (turn a b c):turns (b:c:xs)
 turns _ = []
 
 convexHull :: [Point] -> [Point]
-convexHull points = findPath (p:others) []
+convexHull points = findPath (p:others)
   where p = start (head points) (tail points)
           where start point [] = point
                 start (Point x y) (Point x' y':points) = start lower points
@@ -31,9 +31,9 @@ convexHull points = findPath (p:others) []
                             GT -> Point x' y'
                             _ -> Point x y -- If they're exactly the same, who cares?
         others = sortBy angleFromXWithP (delete p points)
-          where angleFromXWithP a b = compare (cotangent p a) (cotangent p b)
+          where angleFromXWithP a b = compare (cotangent p b) (cotangent p a)
                   where cotangent (Point x y) (Point x' y') = (x'-x)/(y'-y)
-        findPath (a:b:c:xs) path = case turn a b c of
-          RightTurn -> findPath (a:c:xs) path
-          _ -> findPath (b:c:xs) (a:path)
-        findPath _ result = result
+        findPath (a:b:c:xs) = if turn a b c /= RightTurn
+                              then a:findPath (b:c:xs)
+                              else findPath (a:c:xs)
+        findPath xs = xs
