@@ -21,15 +21,10 @@ turns _ = []
 
 convexHull :: [Point] -> [Point]
 convexHull points = findPath (p:others)
-  where p = start (head points) (tail points)
-          where start point [] = point
-                start (Point x y) (Point x' y':points) = start lower points
-                  where lower = case compare y y' of
-                          LT -> Point x y
-                          GT -> Point x' y'
-                          EQ -> case compare x x' of
-                            GT -> Point x' y'
-                            _ -> Point x y -- If they're exactly the same, who cares?
+  where p = minimumBy yThenX points
+          where yThenX (Point x y) (Point x' y') = case compare y y' of
+                  EQ -> compare x x'
+                  ord -> ord
         others = sortBy angleFromXWithP (delete p points)
           where angleFromXWithP a b = compare (cotangent p b) (cotangent p a)
                   where cotangent (Point x y) (Point x' y') = (x'-x)/(y'-y)
