@@ -4,7 +4,7 @@ module PrettyJSON
        ) where
 
 import SimpleJSON (JValue(..))
-import Prettify (Doc, (<>), char, double, fsep, hcat, punctuate, string, series, text, compact, pretty)
+import Prettify (Doc, (<>), double, string, series, text, compact, pretty)
 
 import Data.List (intercalate)
 
