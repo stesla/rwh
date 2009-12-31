@@ -99,6 +99,20 @@ hexEscape c | d < 0x10000 = smallHex d
             | otherwise = astral (d - 0x10000)
               where d = ord c
 
+fill :: Int -> Doc -> Doc
+fill w doc = doc <> filler
+  where filler | space > 0 = text (replicate space ' ')
+               | otherwise = Empty
+        space = w - lineWidth doc
+
+lineWidth :: Doc -> Int
+lineWidth Empty = 0
+lineWidth Line = error "multi-line doc"
+lineWidth (Char _) = 1
+lineWidth (Text str) = length str
+lineWidth (a `Concat` b) = lineWidth a + lineWidth b
+lineWidth (x `Union` _) = lineWidth x
+
 compact :: Doc -> String
 compact x = transform [x]
   where transform [] = ""
