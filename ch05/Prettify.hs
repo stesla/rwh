@@ -108,8 +108,7 @@ lines' (a `Concat` b) = lines' a ++ lines' b
 lines' other = [other]
 
 isLine :: Doc -> Bool
-isLine x | x == line || x == softline = True
-         | otherwise = False
+isLine x = x == line || x == softline
 
 fillLine :: Int -> Doc -> Doc
 fillLine w doc = doc <> filler
