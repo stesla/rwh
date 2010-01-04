@@ -100,7 +100,7 @@ hexEscape c | d < 0x10000 = smallHex d
               where d = ord c
 
 fill :: Int -> Doc -> Doc
-fill w = hcat . map ((<> line) . fillLine (w-1)) . lines'
+fill w = hcat . map ((<> line) . fillLine w) . lines'
 
 lines' :: Doc -> [Doc]
 lines' (a `Concat` b) | isLine b = lines' a
