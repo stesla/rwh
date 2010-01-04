@@ -100,7 +100,19 @@ hexEscape c | d < 0x10000 = smallHex d
               where d = ord c
 
 fill :: Int -> Doc -> Doc
-fill w doc = doc <> filler
+fill w = hcat . map ((<> line) . fillLine (w-1)) . lines'
+
+lines' :: Doc -> [Doc]
+lines' (a `Concat` b) | isLine b = lines' a
+lines' (a `Concat` b) = lines' a ++ lines' b
+lines' other = [other]
+
+isLine :: Doc -> Bool
+isLine x | x == line || x == softline = True
+         | otherwise = False
+
+fillLine :: Int -> Doc -> Doc
+fillLine w doc = doc <> filler
   where filler | space > 0 = text (replicate space ' ')
                | otherwise = Empty
         space = w - lineWidth doc
